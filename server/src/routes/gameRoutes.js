@@ -7,9 +7,11 @@ const {
   createGame,
   updateGame,
   deleteGame,
+  filterGames,
 } = require("../controllers/gameController");
 
 router.get("/", getAllGames);
+router.get("/filter", filterGames);
 router.get("/:id", getGameById);
 router.post("/", createGame);
 router.patch("/:id", updateGame);
