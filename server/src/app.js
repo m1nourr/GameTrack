@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const gameRoutes = require("./routes/gameRoutes");
+const userRoutes = require("./routes/userRoutes");
+const playSessionRoutes = require("./routes/playSessionRoutes");
 
 const app = express();
 
@@ -12,5 +14,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/games", gameRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api", playSessionRoutes);
 
 module.exports = app;
