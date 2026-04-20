@@ -1,15 +1,16 @@
 const express = require("express");
 const cors = require("cors");
+const gameRoutes = require("./routes/gameRoutes");
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes
 app.get("/", (req, res) => {
-  res.send("GameTrack API is running");
+  res.json({ message: "GameTrack API is running" });
 });
+
+app.use("/api/games", gameRoutes);
 
 module.exports = app;
