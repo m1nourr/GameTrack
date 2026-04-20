@@ -85,10 +85,29 @@ const deleteGame = async (req, res) => {
   }
 };
 
+const filterGames = async (req, res) => {
+  try {
+    const { status, platform, priority } = req.query;
+
+    const filters = {};
+
+    if (status) filters.status = status;
+    if (platform) filters.platform = platform;
+    if (priority) filters.priority = priority;
+
+    const games = await Game.find(filters).populate("userId", "username email");
+
+    res.status(200).json(games);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to filter games" });
+  }
+};
+
 module.exports = {
   getAllGames,
   getGameById,
   createGame,
   updateGame,
   deleteGame,
+  filterGames,
 };
