@@ -1,36 +1,39 @@
 const Game = require("../models/Game");
 const User = require("../models/User");
 
-const getAllGames = async (req, res) => {
+const getAllGames = async (req, res, next) => {
   try {
     const games = await Game.find().populate("userId", "username email");
     res.status(200).json(games);
   } catch (error) {
-    console.error(" Get All Games error:", error.message);
-    res.status(500).json({ message: "Failed to fetch games" });
+    next(error);
   }
 };
 
-const getGameById = async (req, res) => {
+const getGameById = async (req, res, next) => {
   try {
     const game = await Game.findById(req.params.id).populate("userId", "username email");
 
     if (!game) {
-      return res.status(404).json({ message: "Game not found" });
+      const error = new Error("Game not found");
+      error.statusCode = 404;
+      return next(error);
     }
 
     res.status(200).json(game);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch game" });
+    next(error);
   }
 };
 
-const createGame = async (req, res) => {
+const createGame = async (req, res, next) => {
   try {
     const { title, platform, genre, status, hoursPlayed, priority, rating, userId } = req.body;
 
     if (!title || !platform || !genre || !userId) {
-      return res.status(400).json({ message: "title, platform, genre, and userId are required" });
+      const error = new Error("title, platform, genre, and userId are required");
+      error.statusCode = 400;
+      return next(error);
     }
 
     const game = await Game.create({
@@ -46,16 +49,18 @@ const createGame = async (req, res) => {
 
     res.status(201).json(game);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    next(error);
   }
 };
 
-const updateGame = async (req, res) => {
+const updateGame = async (req, res, next) => {
   try {
     const game = await Game.findById(req.params.id);
 
     if (!game) {
-      return res.status(404).json({ message: "Game not found" });
+      const error = new Error("Game not found");
+      error.statusCode = 404;
+      return next(error);
     }
 
     const updatedGame = await Game.findByIdAndUpdate(req.params.id, req.body, {
@@ -65,27 +70,29 @@ const updateGame = async (req, res) => {
 
     res.status(200).json(updatedGame);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    next(error);
   }
 };
 
-const deleteGame = async (req, res) => {
+const deleteGame = async (req, res, next) => {
   try {
     const game = await Game.findById(req.params.id);
 
     if (!game) {
-      return res.status(404).json({ message: "Game not found" });
+      const error = new Error("Game not found");
+      error.statusCode = 404;
+      return next(error);
     }
 
     await Game.findByIdAndDelete(req.params.id);
 
     res.status(200).json({ message: "Game deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete game" });
+    next(error);
   }
 };
 
-const filterGames = async (req, res) => {
+const filterGames = async (req, res, next) => {
   try {
     const { status, platform, priority } = req.query;
 
@@ -99,7 +106,7 @@ const filterGames = async (req, res) => {
 
     res.status(200).json(games);
   } catch (error) {
-    res.status(500).json({ message: "Failed to filter games" });
+    next(error);
   }
 };
 
