@@ -1,27 +1,36 @@
+import { useEffect, useState } from "react";
 import GameForm from "./components/GameForm";
 import GameList from "./components/GameList";
+import { fetchGames } from "./api/gameApi";
 
 function App() {
-  const games = [
-    {
-      _id: "1",
-      title: "Elden Ring",
-      platform: "PC",
-      status: "playing",
-    },
-    {
-      _id: "2",
-      title: "GTA 5",
-      platform: "PlayStation 5",
-      status: "backlog",
-    },
-  ];
+  const [games, setGames] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadGames = async () => {
+      try {
+        const data = await fetchGames();
+        setGames(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGames();
+  }, []);
 
   return (
     <main>
       <h1>GameTrack</h1>
       <GameForm />
-      <GameList games={games} />
+
+      {loading && <p>Loading games...</p>}
+      {error && <p>Error: {error}</p>}
+      {!loading && !error && <GameList games={games} />}
     </main>
   );
 }
