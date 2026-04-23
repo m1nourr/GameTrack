@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import GameForm from "./components/GameForm";
 import GameList from "./components/GameList";
-import { fetchGames } from "./api/gameApi";
+import { fetchGames, createGame } from "./api/gameApi";
+
+const CURRENT_USER_ID = "69e62af9424e1fee3fd15f9d";
 
 function App() {
   const [games, setGames] = useState([]);
@@ -23,10 +25,20 @@ function App() {
     loadGames();
   }, []);
 
+  const handleAddGame = async (newGameData) => {
+    try {
+      const createdGame = await createGame(newGameData);
+      setGames((prevGames) => [...prevGames, createdGame]);
+      setError("");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <main>
       <h1>GameTrack</h1>
-      <GameForm />
+      <GameForm onAddGame={handleAddGame} currentUserId={CURRENT_USER_ID} />
 
       {loading && <p>Loading games...</p>}
       {error && <p>Error: {error}</p>}
