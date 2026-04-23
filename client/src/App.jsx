@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import GameForm from "./components/GameForm";
 import GameList from "./components/GameList";
 import FilterBar from "./components/FilterBar";
+import LoadingState from "./components/LoadingState";
+import ErrorState from "./components/ErrorState";
 import { fetchGames, createGame, updateGame, deleteGame } from "./api/gameApi";
 
 const CURRENT_USER_ID = "69e62af9424e1fee3fd15f9d";
@@ -17,18 +19,35 @@ function App() {
   });
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadGames = async () => {
       try {
         const data = await fetchGames();
-        setGames(data);
+
+        if (isMounted) {
+          setGames(data);
+          setError("");
+          setLoading(false);
+        }
       } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        if (isMounted) {
+          setError(err.message);
+          setLoading(false);
+        }
       }
     };
 
     loadGames();
+
+    const intervalId = setInterval(() => {
+      loadGames();
+    }, 10000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
   }, []);
 
   const handleAddGame = async (newGameData) => {
@@ -44,11 +63,9 @@ function App() {
   const handleUpdateGame = async (id, updatedData) => {
     try {
       const updatedGame = await updateGame(id, updatedData);
-
       setGames((prevGames) =>
         prevGames.map((game) => (game._id === id ? updatedGame : game))
       );
-
       setError("");
     } catch (err) {
       setError(err.message);
@@ -58,7 +75,6 @@ function App() {
   const handleDeleteGame = async (id) => {
     try {
       await deleteGame(id);
-
       setGames((prevGames) => prevGames.filter((game) => game._id !== id));
       setError("");
     } catch (err) {
@@ -95,8 +111,8 @@ function App() {
       <GameForm onAddGame={handleAddGame} currentUserId={CURRENT_USER_ID} />
       <FilterBar filters={filters} onFilterChange={handleFilterChange} />
 
-      {loading && <p>Loading games...</p>}
-      {error && <p>Error: {error}</p>}
+      {loading && <LoadingState />}
+      {error && <ErrorState message={error} />}
       {!loading && !error && ( 
         <GameList
           games={filteredGames}
