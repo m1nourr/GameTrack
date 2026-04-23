@@ -8,6 +8,26 @@ export async function fetchGames() {
   return response.json();
 }
 
+export async function fetchUsers() {
+  const response = await fetch("http://localhost:5000/api/users");
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch users");
+  }
+
+  return response.json();
+}
+
+export async function fetchGameSessions(gameId) {
+  const response = await fetch(`http://localhost:5000/api/games/${gameId}/sessions`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch game sessions");
+  }
+
+  return response.json();
+}
+
 export async function createGame(gameData) {
   const response = await fetch("http://localhost:5000/api/games", {
     method: "POST",

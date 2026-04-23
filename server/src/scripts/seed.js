@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const connectDB = require("../config/db");
 const User = require("../models/User");
@@ -35,7 +34,7 @@ const seedData = async () => {
       {
         username: "enzogamer",
         email: "enzo@example.com",
-      }
+      },
     ]);
 
     const games = await Game.insertMany([
@@ -66,6 +65,7 @@ const seedData = async () => {
         status: "wishlist",
         hoursPlayed: 0,
         priority: "high",
+        rating: 9,
         userId: users[0]._id,
       },
       {
@@ -100,31 +100,31 @@ const seedData = async () => {
       },
       {
         gameId: games[1]._id,
-        userId: users[1]._id,
+        userId: users[0]._id,
         sessionDate: new Date("2026-04-12"),
         hours: 1.5,
-        notes: "Played Ultimate Team matches online.",
+        notes: "Finished the main story and completed side content.",
       },
       {
         gameId: games[2]._id,
-        userId: users[2]._id,
-        sessionDate: new Date("2026-04-05"),
-        hours: 4,
-        notes: "Finished the main story.",
-      },
-      {
-        gameId: games[3]._id,
-        userId: users[3]._id,
-        sessionDate: new Date("2026-04-11"),
+        userId: users[0]._id,
+        sessionDate: new Date("2026-04-15"),
         hours: 2,
         notes: "Started the story and unlocked new suits.",
       },
       {
-        gameId: games[4]._id,
-        userId: users[4]._id,
-        sessionDate: new Date("2026-04-13"),
+        gameId: games[3]._id,
+        userId: users[1]._id,
+        sessionDate: new Date("2026-04-11"),
         hours: 5,
         notes: "Built a base and collected resources with friends.",
+      },
+      {
+        gameId: games[4]._id,
+        userId: users[1]._id,
+        sessionDate: new Date("2026-04-13"),
+        hours: 2,
+        notes: "Played Ultimate Team matches and completed objectives.",
       },
     ]);
 

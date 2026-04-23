@@ -1,6 +1,16 @@
 const Game = require("../models/Game");
 const User = require("../models/User");
 
+
+const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find().sort({ username: 1 });
+    res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getGamesByUserId = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.userId);
@@ -24,4 +34,5 @@ const getGamesByUserId = async (req, res, next) => {
 
 module.exports = {
   getGamesByUserId,
+  getAllUsers,
 };
