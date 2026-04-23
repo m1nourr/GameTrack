@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import GameForm from "./components/GameForm";
 import GameList from "./components/GameList";
-import { fetchGames, createGame } from "./api/gameApi";
+import { fetchGames, createGame, updateGame, deleteGame } from "./api/gameApi";
 
 const CURRENT_USER_ID = "69e62af9424e1fee3fd15f9d";
 
@@ -35,6 +35,31 @@ function App() {
     }
   };
 
+  const handleUpdateGame = async (id, updatedData) => {
+    try {
+      const updatedGame = await updateGame(id, updatedData);
+
+      setGames((prevGames) =>
+        prevGames.map((game) => (game._id === id ? updatedGame : game))
+      );
+
+      setError("");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleDeleteGame = async (id) => {
+    try {
+      await deleteGame(id);
+
+      setGames((prevGames) => prevGames.filter((game) => game._id !== id));
+      setError("");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <main>
       <h1>GameTrack</h1>
@@ -42,7 +67,13 @@ function App() {
 
       {loading && <p>Loading games...</p>}
       {error && <p>Error: {error}</p>}
-      {!loading && !error && <GameList games={games} />}
+      {!loading && !error && ( 
+        <GameList
+          games={games}
+          onUpdateGame={handleUpdateGame}
+          onDeleteGame={handleDeleteGame}
+        />
+      )}
     </main>
   );
 }
