@@ -24,6 +24,18 @@ const seedData = async () => {
         username: "deemagamer",
         email: "deema@example.com",
       },
+      {
+        username: "mikaelgamer",
+        email: "mikael@example.com",
+      },
+      {
+        username: "andreasgamer",
+        email: "andreas@example.com",
+      },
+      {
+        username: "enzogamer",
+        email: "enzo@example.com",
+      }
     ]);
 
     const games = await Game.insertMany([
@@ -87,32 +99,32 @@ const seedData = async () => {
         notes: "Completed story missions and explored Los Santos.",
       },
       {
-        gameId: games[0]._id,
-        userId: users[0]._id,
+        gameId: games[1]._id,
+        userId: users[1]._id,
         sessionDate: new Date("2026-04-12"),
-        hours: 2.5,
-        notes: "Did side activities and drove around the city.",
+        hours: 1.5,
+        notes: "Played Ultimate Team matches online.",
       },
       {
-        gameId: games[1]._id,
-        userId: users[0]._id,
+        gameId: games[2]._id,
+        userId: users[2]._id,
         sessionDate: new Date("2026-04-05"),
         hours: 4,
         notes: "Finished the main story.",
       },
       {
-        gameId: games[4]._id,
-        userId: users[1]._id,
+        gameId: games[3]._id,
+        userId: users[3]._id,
         sessionDate: new Date("2026-04-11"),
-        hours: 1.5,
-        notes: "Played Ultimate Team matches online.",
+        hours: 2,
+        notes: "Started the story and unlocked new suits.",
       },
       {
         gameId: games[4]._id,
-        userId: users[1]._id,
+        userId: users[4]._id,
         sessionDate: new Date("2026-04-13"),
-        hours: 2,
-        notes: "Completed objectives and adjusted the squad.",
+        hours: 5,
+        notes: "Built a base and collected resources with friends.",
       },
     ]);
 
