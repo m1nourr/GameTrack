@@ -4,12 +4,11 @@ import GameList from "./components/GameList";
 import FilterBar from "./components/FilterBar";
 import LoadingState from "./components/LoadingState";
 import ErrorState from "./components/ErrorState";
-import { fetchGames, createGame, updateGame, deleteGame } from "./api/gameApi";
-
-const CURRENT_USER_ID = "69e62af9424e1fee3fd15f9d";
+import { fetchGames, fetchUsers, createGame, updateGame, deleteGame } from "./api/gameApi";
 
 function App() {
   const [games, setGames] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
@@ -18,15 +17,32 @@ function App() {
     platform: "",
   });
 
+
+  const normalizeGameOwner = (game, usersList) => {
+    if (!game) return game;
+
+    if (game.userId && typeof game.userId === "object" && game.userId.username) {
+      return game;
+    }
+
+    const matchedUser = usersList.find((user) => user._id === game.userId);
+    
+    return {
+      ...game,
+      userId: matchedUser || game.userId,
+    };
+  };
+
   useEffect(() => {
     let isMounted = true;
 
     const loadGames = async () => {
       try {
-        const data = await fetchGames();
+        const [gamesData, usersData] = await Promise.all([fetchGames(), fetchUsers()]);
 
         if (isMounted) {
-          setGames(data);
+          setGames(gamesData);
+          setUsers(usersData);
           setError("");
           setLoading(false);
         }
@@ -53,7 +69,9 @@ function App() {
   const handleAddGame = async (newGameData) => {
     try {
       const createdGame = await createGame(newGameData);
-      setGames((prevGames) => [...prevGames, createdGame]);
+      const normalizedGame = normalizeGameOwner(createdGame, users);
+
+      setGames((prevGames) => [...prevGames, normalizedGame]);
       setError("");
     } catch (err) {
       setError(err.message);
@@ -63,9 +81,12 @@ function App() {
   const handleUpdateGame = async (id, updatedData) => {
     try {
       const updatedGame = await updateGame(id, updatedData);
+      const normalizedGame = normalizeGameOwner(updatedGame, users);
+
       setGames((prevGames) =>
-        prevGames.map((game) => (game._id === id ? updatedGame : game))
+        prevGames.map((game) => (game._id === id ? normalizedGame : game))
       );
+
       setError("");
     } catch (err) {
       setError(err.message);
@@ -108,7 +129,8 @@ function App() {
   return (
     <main>
       <h1>GameTrack</h1>
-      <GameForm onAddGame={handleAddGame} currentUserId={CURRENT_USER_ID} />
+      
+      <GameForm onAddGame={handleAddGame} users={users} />
       <FilterBar filters={filters} onFilterChange={handleFilterChange} />
 
       {loading && <LoadingState />}

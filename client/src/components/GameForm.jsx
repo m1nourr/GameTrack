@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function GameForm({ onAddGame, currentUserId }) {
+function GameForm({ onAddGame, users }) {
   const [formData, setFormData] = useState({
     title: "",
     platform: "",
@@ -9,6 +9,7 @@ function GameForm({ onAddGame, currentUserId }) {
     hoursPlayed: 0,
     priority: "medium",
     rating: "",
+    userId: "",
   });
 
   const handleChange = (event) => {
@@ -23,11 +24,15 @@ function GameForm({ onAddGame, currentUserId }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (!formData.userId) { 
+      return;
+    }
+    
     await onAddGame({
       ...formData,
       hoursPlayed: Number(formData.hoursPlayed),
       rating: formData.rating === "" ? undefined : Number(formData.rating),
-      userId: currentUserId,
+      userId: formData.userId,
     });
 
     setFormData({
@@ -38,6 +43,7 @@ function GameForm({ onAddGame, currentUserId }) {
       hoursPlayed: 0,
       priority: "medium",
       rating: "",
+      userId: "",
     });
   };
   
@@ -99,6 +105,15 @@ function GameForm({ onAddGame, currentUserId }) {
           value={formData.rating}
           onChange={handleChange}
         />
+
+        <select name="userId" value={formData.userId} onChange={handleChange}>
+          <option value="">Select User</option>
+          {users.map((user) => (
+            <option key={user._id} value={user._id}>
+              {user.username}
+            </option>
+          ))}
+        </select>
 
         <button type="submit">Add Game</button>
       </form>
