@@ -1,5 +1,5 @@
 function LoadingState() {
-  return <p>Loading games...</p>;
+  return <p className="status-message">Loading games...</p>;
 }
 
 export default LoadingState;

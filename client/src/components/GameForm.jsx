@@ -13,13 +13,13 @@ function GameForm({ onAddGame, users }) {
   });
 
   const handleChange = (event) => {
-  const { name, value } = event.target;
+    const { name, value } = event.target;
 
-  setFormData((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
-};
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -27,7 +27,7 @@ function GameForm({ onAddGame, users }) {
     if (!formData.userId) { 
       return;
     }
-    
+
     await onAddGame({
       ...formData,
       hoursPlayed: Number(formData.hoursPlayed),
@@ -48,10 +48,9 @@ function GameForm({ onAddGame, users }) {
   };
   
   return (
-    <section>
+    <section className="card">
       <h2>Add Game</h2>
-      <form onSubmit={handleSubmit}>
-        
+      <form className="game-form" onSubmit={handleSubmit}>
         <input
           type="text"
           name="title"
@@ -115,7 +114,9 @@ function GameForm({ onAddGame, users }) {
           ))}
         </select>
 
-        <button type="submit">Add Game</button>
+        <button type="submit" className="primary-btn">
+          Add Game
+        </button>
       </form>
     </section>
   );

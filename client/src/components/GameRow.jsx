@@ -52,7 +52,6 @@ function GameRow({ game, onUpdateGame, onDeleteGame }) {
         setSessionsError("");
         const data = await fetchGameSessions(game._id);
         setSessions(data);
-        setSessionsError("");
       } catch (error) {
         setSessionsError(error.message);
       } finally {
@@ -65,8 +64,8 @@ function GameRow({ game, onUpdateGame, onDeleteGame }) {
 
   if (isEditing) {
     return (
-      <li>
-        <form onSubmit={handleSave}>
+      <li className="game-card">
+        <form className="edit-form" onSubmit={handleSave}>
           <input
             type="text"
             name="title"
@@ -107,44 +106,70 @@ function GameRow({ game, onUpdateGame, onDeleteGame }) {
             onChange={handleChange}
           />
 
-          <button type="submit">Save</button>
-          <button type="button" onClick={() => setIsEditing(false)}>
-            Cancel
-          </button>
+          <div className="button-row">
+            <button type="submit" className="primary-btn">
+              Save
+            </button>
+            <button 
+              type="button" 
+              className="secondary-btn" 
+              onClick={() => setIsEditing(false)}
+              >
+              Cancel
+            </button>
+          </div>
         </form>
       </li>
     );
   }
 
   return (
-    <li>
-      <strong>{game.title}</strong> - {game.platform} - {game.status} - {game.hoursPlayed} hours
-      <div> Owner: {game.userId?.username || "Unknown user"} </div>
+    <li className="game-card">
+      <div className="game-card-top">
+        <div>
+          <h3>{game.title}</h3>
+          <p><strong>Platform:</strong> {game.platform}</p>
+          <p><strong>Genre:</strong> {game.genre}</p>
+          <p><strong>Status:</strong> {game.status}</p>
+          <p><strong>Hours Played:</strong> {game.hoursPlayed}</p>
+          <p><strong>Owner:</strong> {game.userId?.username || "Unknown user"}</p>
+        </div>
+      </div>
 
-      <button type="button" onClick={() => setIsEditing(true)}>
-        Edit
-      </button>
+      <div className="button-row">
+        <button
+          type="button"
+          className="primary-btn"
+          onClick={() => setIsEditing(true)}
+        >
+          Edit
+        </button>
 
-      <button type="button" onClick={handleDelete}>
-        Delete
-      </button>
+        <button type="button" className="danger-btn" onClick={handleDelete}>
+          Delete
+        </button>
 
-      <button type="button" onClick={handleToggleSessions}>
-        {showSessions ? "Hide" : "Show"} Sessions
-      </button>
+        <button
+          type="button"
+          className="secondary-btn"
+          onClick={handleToggleSessions}
+        >
+          {showSessions ? "Hide" : "Show"} Sessions
+        </button>
+      </div>
 
       {showSessions && (
-        <div>
+        <div className="sessions-box">
           {sessionsLoading && <p>Loading sessions...</p>}
           {sessionsError && <p>Error: {sessionsError}</p>}
           {!sessionsLoading && !sessionsError && sessions.length === 0 && (
             <p>No play sessions found.</p>
           )}
           {!sessionsLoading && !sessionsError && sessions.length > 0 && (
-            <ul>
+            <ul className="sessions-list">
               {sessions.map((session) => (
                 <li key={session._id}>
-                  {new Date(session.sessionDate).toLocaleDateString()} - {session.hours}h - {" "}
+                  {new Date(session.sessionDate).toLocaleDateString()} - {session.hours}h -{" "}
                   {session.notes}
                 </li>
               ))}
