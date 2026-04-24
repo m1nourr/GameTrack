@@ -131,12 +131,11 @@ function App() {
     <div className = "app-shell">
       <main className = "app-container">
         <header className="hero">
-          <img src={logo} alt="GameTrack Logo" className="hero-logo" />
-          <div className="hero-text">
-              <h1>GameTrack</h1>
-              <p>Track your backlog, update your progress and keep your games organized.</p>
-          </div>
-        </header> 
+          <img src={logo} alt="GameTrack logo" className="hero-logo" />
+          <p className="hero-subtitle">
+            Track your backlog, update your progress, and keep your games organized.
+          </p>
+        </header>
         <section className="top-grid">
           <GameForm onAddGame={handleAddGame} users={users} />
           <FilterBar filters={filters} onFilterChange={handleFilterChange} />
