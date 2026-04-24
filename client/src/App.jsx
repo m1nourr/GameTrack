@@ -5,6 +5,7 @@ import FilterBar from "./components/FilterBar";
 import LoadingState from "./components/LoadingState";
 import ErrorState from "./components/ErrorState";
 import { fetchGames, fetchUsers, createGame, updateGame, deleteGame } from "./api/gameApi";
+import logo from "./assets/gametrack_website.png";
 
 function App() {
   const [games, setGames] = useState([]);
@@ -127,22 +128,32 @@ function App() {
   });  
 
   return (
-    <main>
-      <h1>GameTrack</h1>
-      
-      <GameForm onAddGame={handleAddGame} users={users} />
-      <FilterBar filters={filters} onFilterChange={handleFilterChange} />
+    <div className = "app-shell">
+      <main className = "app-container">
+        <header className="hero">
+          <img src={logo} alt="GameTrack Logo" className="hero-logo" />
+          <div className="hero-text">
+              <h1>GameTrack</h1>
+              <p>Track your backlog, update your progress and keep your games organized.</p>
+          </div>
+        </header> 
+        <section className="top-grid">
+          <GameForm onAddGame={handleAddGame} users={users} />
+          <FilterBar filters={filters} onFilterChange={handleFilterChange} />
+        </section>
 
-      {loading && <LoadingState />}
-      {error && <ErrorState message={error} />}
-      {!loading && !error && ( 
-        <GameList
-          games={filteredGames}
-          onUpdateGame={handleUpdateGame}
-          onDeleteGame={handleDeleteGame}
-        />
-      )}
-    </main>
+        {loading && <LoadingState />}
+        {error && <ErrorState message={error} />}
+
+        {!loading && !error && ( 
+          <GameList
+            games={filteredGames}
+            onUpdateGame={handleUpdateGame}
+            onDeleteGame={handleDeleteGame}
+          />
+        )}
+      </main>
+    </div>
   );
 }
 
