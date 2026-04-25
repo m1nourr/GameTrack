@@ -133,7 +133,7 @@ function App() {
         <header className="hero">
           <img src={logo} alt="GameTrack logo" className="hero-logo" />
           <p className="hero-subtitle">
-            Track your backlog, update your progress, and keep your games organized.
+            Track your backlog, update your progress, and keep your games organized
           </p>
         </header>
         <section className="top-grid">
