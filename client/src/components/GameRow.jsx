@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { fetchGameSessions } from "../api/gameApi";
+import SessionForm from "./SessionForm";
+import SessionList from "./SessionList";
 
 
 function GameRow({ game, onUpdateGame, onDeleteGame }) {
@@ -62,6 +64,12 @@ function GameRow({ game, onUpdateGame, onDeleteGame }) {
     setShowSessions((prev) => !prev);
   }
 
+  const handleSessionAdded = (newSession) => {
+    setSessions((prev) => [newSession, ...prev]);
+    setShowSessions(true);
+    setSessionsError("");
+  };
+
   if (isEditing) {
     return (
       <li className="game-card">
@@ -119,6 +127,7 @@ function GameRow({ game, onUpdateGame, onDeleteGame }) {
             </button>
           </div>
         </form>
+        <SessionForm gameId={game._id} onSessionAdded={handleSessionAdded} />
       </li>
     );
   }
@@ -159,23 +168,11 @@ function GameRow({ game, onUpdateGame, onDeleteGame }) {
       </div>
 
       {showSessions && (
-        <div className="sessions-box">
-          {sessionsLoading && <p>Loading sessions...</p>}
-          {sessionsError && <p>Error: {sessionsError}</p>}
-          {!sessionsLoading && !sessionsError && sessions.length === 0 && (
-            <p>No play sessions found.</p>
-          )}
-          {!sessionsLoading && !sessionsError && sessions.length > 0 && (
-            <ul className="sessions-list">
-              {sessions.map((session) => (
-                <li key={session._id}>
-                  {new Date(session.sessionDate).toLocaleDateString()} - {session.hours}h -{" "}
-                  {session.notes}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <SessionList
+          sessions={sessions}
+          loading={sessionsLoading}
+          error={sessionsError}
+        />
       )}
     </li>
   );
