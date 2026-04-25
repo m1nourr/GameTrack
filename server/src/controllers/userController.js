@@ -32,7 +32,29 @@ const getGamesByUserId = async (req, res, next) => {
   }
 };
 
+const createUser = async (req, res, next) => {
+  try {
+    const { username, email } = req.body;
+
+    if (!username || !email) {
+      const error = new Error("username and email are required");
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    const user = await User.create({
+      username,
+      email,
+    });
+
+    res.status(201).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getGamesByUserId,
   getAllUsers,
+  createUser,
 };

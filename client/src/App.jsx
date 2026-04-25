@@ -4,7 +4,8 @@ import GameList from "./components/GameList";
 import FilterBar from "./components/FilterBar";
 import LoadingState from "./components/LoadingState";
 import ErrorState from "./components/ErrorState";
-import { fetchGames, fetchUsers, createGame, updateGame, deleteGame } from "./api/gameApi";
+import UserForm from "./components/UserForm";
+import { fetchGames, fetchUsers, createGame, updateGame, deleteGame, createUser } from "./api/gameApi";
 import logo from "./assets/gametrack_website.png";
 
 function App() {
@@ -66,6 +67,16 @@ function App() {
       clearInterval(intervalId);
     };
   }, []);
+
+  const handleAddUser = async (newUserData) => {
+  try {
+    const createdUser = await createUser(newUserData);
+    setUsers((prevUsers) => [...prevUsers, createdUser]);
+    setError("");
+  } catch (err) {
+    setError(err.message);
+  }
+};
 
   const handleAddGame = async (newGameData) => {
     try {
@@ -138,7 +149,11 @@ function App() {
         </header>
         <section className="top-grid">
           <GameForm onAddGame={handleAddGame} users={users} />
-          <FilterBar filters={filters} onFilterChange={handleFilterChange} />
+          
+          <div className="right-column">
+            <UserForm onAddUser={handleAddUser} />
+            <FilterBar filters={filters} onFilterChange={handleFilterChange} />
+          </div>
         </section>
 
         {loading && <LoadingState />}
