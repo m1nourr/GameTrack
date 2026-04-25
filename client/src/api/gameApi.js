@@ -46,6 +46,24 @@ export async function createUser(userData) {
   return data;
 }
 
+export async function createGameSession(gameId, sessionData) {
+  const response = await fetch(`http://localhost:5000/api/games/${gameId}/sessions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(sessionData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to create play session");
+  }
+
+  return data;
+}
+
 export async function createGame(gameData) {
   const response = await fetch("http://localhost:5000/api/games", {
     method: "POST",
